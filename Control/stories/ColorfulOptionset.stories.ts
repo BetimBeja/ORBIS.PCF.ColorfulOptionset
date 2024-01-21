@@ -8,6 +8,7 @@ import type {
 import {
   ComponentFrameworkMockGeneratorReact,
   EnumPropertyMock,
+  MetadataDB,
   OptionSetPropertyMock,
   ShkoOnline,
   StringPropertyMock,
@@ -51,8 +52,28 @@ export default {
     layout: "fullscreen",
   },
   // More on argTypes: https://storybook.js.org/docs/html/api/argtypes
-
+  args: {
+    icon: undefined,
+    options: undefined,
+    disabled: false,
+    visible: true,
+  },
   argTypes: {
+    icon: {
+      control: "text",
+      name: "Icon",
+      table: {
+        category: "Parameters",
+      },
+    },
+    options: {
+      control: "object",
+      name: "Options",
+      table: {
+        category: "Parameters",
+        subcategory: "Metadata"
+      },
+    },
     disabled: {
       control: "boolean",
       name: "Disabled",
@@ -88,21 +109,13 @@ const renderGenerator = () => {
       mockGenerator = new ComponentFrameworkMockGeneratorReact(Component, {
         icon: StringPropertyMock,
         optionsInput: OptionSetPropertyMock,
-        sortBy: EnumPropertyMock<"TEXT" | "VALUE">,
+        sortBy: EnumPropertyMock,
       });
 
       var selectionMetadata = mockGenerator.metadata.getAttributeMetadata(
-        "!CanvasApp",
+        MetadataDB.CanvasLogicalName,
         "optionsInput"
       ) as ShkoOnline.PickListAttributeMetadata;
-
-      selectionMetadata.OptionSet = {
-        IsCustomOptionSet: true,
-        MetadataId: "",
-        Name: "optionset",
-        OptionSetType: 11,
-        Options: {},
-      };
 
       args.options.forEach(
         (option: {
@@ -115,7 +128,7 @@ const renderGenerator = () => {
       );
 
       mockGenerator.metadata.upsertAttributeMetadata(
-        "!CanvasApp",
+        MetadataDB.CanvasLogicalName,
         selectionMetadata
       );
 
@@ -127,10 +140,9 @@ const renderGenerator = () => {
         optionsInput: args.optionsInput == null ? undefined : args.optionsInput,
       });
 
-      mockGenerator.onOutputChanged.callsFake(() => {
-        mockGenerator.context._parameters.optionsInput._Refresh();
+      mockGenerator.onOutputChanged.callsFake(({ optionsInput }) => {
         updateArgs({
-          optionsInput: mockGenerator.context._parameters.optionsInput.raw,
+          optionsInput,
         });
       });
 
@@ -153,7 +165,6 @@ const renderGenerator = () => {
 export const Primary = {
   render: renderGenerator(),
   args: {
-    disabled: false,
     icon: "FavoriteStarFill",
     options: [
       { Value: 0, Label: "First Option", Color: "#dd0000" },
@@ -174,7 +185,6 @@ export const Primary = {
 export const BankIcon = {
   render: renderGenerator(),
   args: {
-    disabled: false,
     icon: "Bank",
     options: [
       { Value: 0, Label: "First Option", Color: "#dd0000" },

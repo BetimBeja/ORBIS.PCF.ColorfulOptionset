@@ -20,8 +20,8 @@ webpackFinal: async (config) => {
   config.resolve.alias['react'] = path.resolve('./node_modules/react');
   config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
   config.resolve.fallback = config.resolve.fallback || {};
-  config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve('./.storybook/jsx.runtime.js');
-  config.resolve.fallback['react/jsx-runtime'] = path.resolve('./.storybook/jsx.runtime.js');
+  config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve('./.storybook/react-jsx-dev-runtime.development.js');
+  config.resolve.fallback['react/jsx-runtime'] = path.resolve('./.storybook/react-jsx-runtime.production.min.js');
 
   config.plugins.push(
       new webpack.SourceMapDevToolPlugin({
